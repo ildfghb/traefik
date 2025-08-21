@@ -2,22 +2,17 @@ version: '3.8'
 services:
   traefik:
     image: traefik:v3.0
-    command:
-      - "--api.insecure=true"
-      - "--entrypoints.web.address=:80"
-      - "--providers.http.endpoint=http://httpbin.org/json"
-      - "--log.level=DEBUG"
     ports:
       - "80:80"
       - "8080:8080"
-    restart: unless-stopped
     environment:
+      # 基础配置
       - "TRAEFIK_API_INSECURE=true"
       - "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80"
       - "TRAEFIK_LOG_LEVEL=DEBUG"
-    labels:
-      # 使用 Docker labels 方式定义路由
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=PathPrefix(`/whoami`)"
-      - "traefik.http.routers.whoami.service=whoami-service"
-      - "traefik.http.services.whoami-service.loadbalancer.server.url=http://dyzfbakk.whoami.qhph39ns.34m0njpv.com"
+      
+      # 直接通过环境变量配置路由
+      - "TRAEFIK_HTTP_ROUTERS_WHOAMI_RULE=PathPrefix(`/whoami`)"
+      - "TRAEFIK_HTTP_ROUTERS_WHOAMI_SERVICE=whoami-service"
+      - "TRAEFIK_HTTP_SERVICES_WHOAMI_LOADBALANCER_SERVERS_0_URL=http://dyzfbakk.whoami.qhph39ns.34m0njpv.com"
+    restart: unless-stopped
