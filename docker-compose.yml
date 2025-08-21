@@ -1,18 +1,8 @@
 version: '3.8'
 services:
   traefik:
-    image: traefik:v3.0
+    build: .
     ports:
       - "80:80"
       - "8080:8080"
-    environment:
-      # 基础配置
-      - "TRAEFIK_API_INSECURE=true"
-      - "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80"
-      - "TRAEFIK_LOG_LEVEL=DEBUG"
-      
-      # 直接通过环境变量配置路由
-      - "TRAEFIK_HTTP_ROUTERS_WHOAMI_RULE=PathPrefix(`/whoami`)"
-      - "TRAEFIK_HTTP_ROUTERS_WHOAMI_SERVICE=whoami-service"
-      - "TRAEFIK_HTTP_SERVICES_WHOAMI_LOADBALANCER_SERVERS_0_URL=http://dyzfbakk.whoami.qhph39ns.34m0njpv.com"
     restart: unless-stopped

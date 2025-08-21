@@ -1,15 +1,12 @@
 FROM traefik:v3.0
 
-# 暴露端口
-EXPOSE 80 443 8080
+# 安装必要工具
+RUN apk add --no-cache curl bash
 
-# 启动命令 - 配置 Kubernetes 服务发现
-CMD ["traefik", \
-  "--api.dashboard=true", \
-  "--api.insecure=true", \
-  "--providers.kubernetescrd=true", \
-  "--providers.kubernetesingress=true", \
-  "--entrypoints.web.address=:80", \
-  "--entrypoints.websecure.address=:443", \
-  "--entrypoints.traefik.address=:8080", \
-  "--log.level=INFO"]
+# 复制脚本
+COPY register-services.sh /usr/local/bin/register-services.sh
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/register-services.sh /usr/local/bin/start.sh
+
+EXPOSE 80 8080
+CMD ["/usr/local/bin/start.sh"]
