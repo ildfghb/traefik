@@ -5,13 +5,11 @@ services:
     command:
       - "--api.insecure=true"
       - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
       - "--providers.file.filename=/etc/traefik/dynamic-config.yml"
       - "--providers.file.watch=true"
       - "--log.level=INFO"
     ports:
       - "80:80"
-      - "443:443"
       - "8080:8080"
     volumes:
       - ./dynamic-config.yml:/etc/traefik/dynamic-config.yml:ro
