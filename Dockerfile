@@ -1,15 +1,10 @@
-FROM traefik:v3.0
+FROM alpine:3.18
 
-# 暴露端口
-EXPOSE 80 443 8080
+# 下载并安装 whoami 二进制文件
+RUN apk add --no-cache ca-certificates wget && \
+    wget -O /usr/local/bin/whoami https://github.com/traefik/whoami/releases/download/v1.8.0/whoami_v1.8.0_linux_amd64 && \
+    chmod +x /usr/local/bin/whoami && \
+    apk del wget
 
-# 启动命令 - 配置 Kubernetes 服务发现
-CMD ["traefik", \
-  "--api.dashboard=true", \
-  "--api.insecure=true", \
-  "--providers.kubernetescrd=true", \
-  "--providers.kubernetesingress=true", \
-  "--entrypoints.web.address=:80", \
-  "--entrypoints.websecure.address=:443", \
-  "--entrypoints.traefik.address=:8080", \
-  "--log.level=INFO"]
+EXPOSE 80
+CMD ["whoami"]
