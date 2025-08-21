@@ -5,12 +5,19 @@ services:
     command:
       - "--api.insecure=true"
       - "--entrypoints.web.address=:80"
-      - "--providers.file.filename=/dynamic-config.yml"
-      - "--providers.file.watch=true"
+      - "--providers.http.endpoint=http://httpbin.org/json"
       - "--log.level=DEBUG"
     ports:
       - "80:80"
       - "8080:8080"
-    volumes:
-      - ./dynamic-config.yml:/dynamic-config.yml:ro
     restart: unless-stopped
+    environment:
+      - "TRAEFIK_API_INSECURE=true"
+      - "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80"
+      - "TRAEFIK_LOG_LEVEL=DEBUG"
+    labels:
+      # 使用 Docker labels 方式定义路由
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.service=whoami-service"
+      - "traefik.http.services.whoami-service.loadbalancer.server.url=http://dyzfbakk.whoami.qhph39ns.34m0njpv.com"
