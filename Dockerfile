@@ -1,6 +1,10 @@
 FROM traefik:v3.0
+
+# 安装基础工具
 RUN apk add --no-cache curl
-RUN mkdir -p /etc/traefik
-COPY config/whoami.yml /etc/traefik/whoami.yml
+
+# 暴露端口
 EXPOSE 8080
-CMD ["traefik", "--api.insecure=true", "--entrypoints.web.address=:8080", "--providers.file.directory=/etc/traefik", "--providers.file.watch=true", "--log.level=INFO"]
+
+# 使用最简单的启动命令
+CMD ["traefik", "--api.insecure=true", "--entrypoints.web.address=:8080"]
