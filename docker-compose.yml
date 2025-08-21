@@ -5,12 +5,12 @@ services:
     command:
       - "--api.insecure=true"
       - "--entrypoints.web.address=:80"
-      - "--providers.file.filename=/etc/traefik/dynamic-config.yml"
+      - "--providers.file.filename=/dynamic-config.yml"
       - "--providers.file.watch=true"
-      - "--log.level=INFO"
+      - "--log.level=DEBUG"
     ports:
       - "80:80"
       - "8080:8080"
     volumes:
-      - ./dynamic-config.yml:/etc/traefik/dynamic-config.yml:ro
+      - ./dynamic-config.yml:/dynamic-config.yml:ro
     restart: unless-stopped
