@@ -3,9 +3,9 @@ http:
     whoami-router:
       rule: "PathPrefix(`/whoami`)"
       service: "whoami-service"
-      entrypoints:
+      entryPoints:
         - "web"
-  
+
   services:
     whoami-service:
       loadBalancer:

@@ -3,6 +3,12 @@ services:
   traefik:
     build: .
     ports:
-      - "80:80"
       - "8080:8080"
+    volumes:
+      - ./config:/etc/traefik:ro
     restart: unless-stopped
+    environment:
+      - TRAEFIK_API_INSECURE=true
+      - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:8080
+      - TRAEFIK_PROVIDERS_FILE_DIRECTORY=/etc/traefik
+      - TRAEFIK_LOG_LEVEL=INFO
