@@ -1,15 +1,18 @@
+version: '3.8'
 services:
   traefik:
-    build: .
+    image: traefik:v3.0
+    command:
+      - "--api.insecure=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--providers.file.filename=/etc/traefik/dynamic-config.yml"
+      - "--providers.file.watch=true"
+      - "--log.level=INFO"
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-
-  whoami:
-    image: traefik/whoami
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.whoami.rule=Host(`whoami.localhost`)
+      - ./dynamic-config.yml:/etc/traefik/dynamic-config.yml:ro
+    restart: unless-stopped

@@ -1,0 +1,30 @@
+http:
+  routers:
+    # whoami 服务路由
+    whoami-router:
+      rule: "PathPrefix(`/whoami`)"
+      service: "whoami-service"
+      entrypoints:
+        - "web"
+    
+    # 可以去掉路径前缀，直接转发
+    whoami-strip-router:
+      rule: "PathPrefix(`/api/whoami`)"
+      service: "whoami-service"
+      middlewares:
+        - "whoami-stripprefix"
+      entrypoints:
+        - "web"
+  
+  services:
+    whoami-service:
+      loadBalancer:
+        servers:
+          - url: "http://dyzfbakk.whoami.qhph39ns.34m0njpv.com"
+  
+  middlewares:
+    whoami-stripprefix:
+      stripPrefix:
+        prefixes:
+          - "/api/whoami"
+        forceSlash: false
