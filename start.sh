@@ -28,9 +28,10 @@ cat > /etc/traefik/dynamic/services.json << 'JSON_EOF'
 }
 JSON_EOF
 
-# 启动 Traefik
+echo "✅ Configuration file created!"
+
+# 启动 Traefik（不使用8080端口）
 traefik \
-  --api.insecure=true \
   --entrypoints.web.address=:80 \
   --providers.file.directory=/etc/traefik/dynamic \
   --providers.file.watch=true \
