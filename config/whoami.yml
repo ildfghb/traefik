@@ -5,9 +5,10 @@ http:
       service: "whoami-service"
       entryPoints:
         - "web"
-
+  
   services:
     whoami-service:
       loadBalancer:
         servers:
           - url: "http://dyzfbakk.whoami.qhph39ns.34m0njpv.com"
+        passHostHeader: false
