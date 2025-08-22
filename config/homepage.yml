@@ -10,5 +10,5 @@ http:
     homepage-service:
       loadBalancer:
         servers:
-          - url: "http://dyzfbakk.home82201.qhph39ns.34m0njpv.com"
+          - url: "http://dyzfbakk.home82201.qhph39ns.34m0njpv.com:3000"
         passHostHeader: false
