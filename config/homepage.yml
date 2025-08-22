@@ -5,7 +5,15 @@ http:
       service: "homepage-service"
       entryPoints:
         - "web"
-  
+      middlewares:
+        - "homepage-stripprefix"
+
+  middlewares:
+    homepage-stripprefix:
+      stripPrefix:
+        prefixes:
+          - "/homepage"
+
   services:
     homepage-service:
       loadBalancer:
