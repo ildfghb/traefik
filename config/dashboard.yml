@@ -1,22 +1,37 @@
 http:
   routers:
-    dashboard-router:
-      rule: "PathPrefix(`/dashboard`)"
-      service: "dashboard-service"
-      entryPoints:
-        - "web"
+    # /newpage —— 反代到 SvelteKit Dashboard（已用 base=/newpage 打包）
+    newpage-router:
+      entryPoints: [web]                     # 如果你有 websecure 就另外加一个
+      rule: PathPrefix(`/newpage`) || Path(`/newpage`)
+      service: dashboard-service
+      priority: 200                          # 关键：比根路由优先
       middlewares:
-        - "dashboard-stripprefix"
-
-  middlewares:
-    dashboard-stripprefix:
-      stripPrefix:
-        prefixes:
-          - "/dashboard"
+        - gzip
+        - sec-headers
 
   services:
     dashboard-service:
       loadBalancer:
+        passHostHeader: true
         servers:
           - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"
-        passHostHeader: false
+      # 可选：你的上游若支持，可以开健康检查
+      # healthCheck:
+      #   path: /newpage/
+      #   interval: "10s"
+      #   timeout: "2s"
+
+  middlewares:
+    gzip:
+      compress: {}
+
+    sec-headers:
+      headers:
+        referrerPolicy: no-referrer-when-downgrade
+        frameDeny: true
+        contentTypeNosniff: true
+        browserXssFilter: true
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
