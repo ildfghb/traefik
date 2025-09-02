@@ -1,22 +1,13 @@
 http:
   routers:
     homepage-router:
-      rule: "PathPrefix(`/homepage`)"
-      service: "homepage-service"
-      entryPoints:
-        - "web"
-      middlewares:
-        - "homepage-stripprefix"
-
-  middlewares:
-    homepage-stripprefix:
-      stripPrefix:
-        prefixes:
-          - "/homepage"
+      entryPoints: [web]
+      rule: PathPrefix(`/`)
+      service: homepage-service
 
   services:
     homepage-service:
       loadBalancer:
+        passHostHeader: true
         servers:
           - url: "http://dyzfbakk.home.qhph39ns.34m0njpv.com"
-        passHostHeader: false
