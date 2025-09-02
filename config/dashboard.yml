@@ -1,0 +1,22 @@
+http:
+  routers:
+    dashboard-router:
+      rule: "PathPrefix(`/dashboard`)"
+      service: "dashboard-service"
+      entryPoints:
+        - "web"
+      middlewares:
+        - "dashboard-stripprefix"
+
+  middlewares:
+    dashboard-stripprefix:
+      stripPrefix:
+        prefixes:
+          - "/dashboard"
+
+  services:
+    dashboard-service:
+      loadBalancer:
+        servers:
+          - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"
+        passHostHeader: false
