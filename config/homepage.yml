@@ -1,14 +1,21 @@
+# config/homepage.yml  
 http:
   routers:
     homepage-router:
       entryPoints: [web]
-      rule: Host(`testtraefik1-170350-7-1365954890.sh.run.tcloudbase.com`) && PathPrefix(`/`)
+      rule: "PathPrefix(`/`)"
       service: homepage-service
       priority: 1
-
+      middlewares:
+        - gzip
+        
   services:
     homepage-service:
       loadBalancer:
-        passHostHeader: true
         servers:
-          - url: "http://dyzfbakk.home.qhph39ns.34m0njpv.com"   # 你的主页内网地址
+          - url: "http://dyzfbakk.home.qhph39ns.34m0njpv.com"
+        # 可选：启用健康检查
+        # healthCheck:
+        #   path: "/"
+        #   interval: "30s" 
+        #   timeout: "5s"

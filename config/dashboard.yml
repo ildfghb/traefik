@@ -1,26 +1,25 @@
+# config/dashboard.yml
 http:
   routers:
-    newpage-router:
+    dashboard-router:
       entryPoints: [web]
-      rule: PathPrefix(`/newpage`) || Path(`/newpage`)
+      rule: "PathPrefix(`/newpage`)"
       service: dashboard-service
-      priority: 1000                 # 提高优先级，保证先匹配
+      priority: 100
       middlewares:
         - add-slash-newpage
         - gzip
-        - sec-headers
-
+        
   services:
     dashboard-service:
       loadBalancer:
-        passHostHeader: true
         servers:
-          - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"  # 内网域名
-      # 可选健康检查，推荐打开
-      # healthCheck:
-      #   path: /newpage/
-      #   interval: "10s"
-      #   timeout: "2s"
+          - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"
+        # 可选：启用健康检查
+        # healthCheck:
+        #   path: "/newpage/"
+        #   interval: "30s"
+        #   timeout: "5s"
 
   middlewares:
     add-slash-newpage:
@@ -28,16 +27,6 @@ http:
         regex: "^/newpage$"
         replacement: "/newpage/"
         permanent: true
-
+    
     gzip:
       compress: {}
-
-    sec-headers:
-      headers:
-        referrerPolicy: no-referrer-when-downgrade
-        frameDeny: true
-        contentTypeNosniff: true
-        browserXssFilter: true
-        stsSeconds: 31536000
-        stsIncludeSubdomains: true
-        stsPreload: true
