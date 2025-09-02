@@ -1,12 +1,12 @@
 http:
   routers:
-    # /newpage —— 反代到 SvelteKit Dashboard（已用 base=/newpage 打包）
     newpage-router:
-      entryPoints: [web]                     # 如果你有 websecure 就另外加一个
+      entryPoints: [web]
       rule: PathPrefix(`/newpage`) || Path(`/newpage`)
       service: dashboard-service
-      priority: 200                          # 关键：比根路由优先
+      priority: 1000                 # 提高优先级，保证先匹配
       middlewares:
+        - add-slash-newpage
         - gzip
         - sec-headers
 
@@ -15,14 +15,20 @@ http:
       loadBalancer:
         passHostHeader: true
         servers:
-          - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"
-      # 可选：你的上游若支持，可以开健康检查
+          - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"  # 内网域名
+      # 可选健康检查，推荐打开
       # healthCheck:
       #   path: /newpage/
       #   interval: "10s"
       #   timeout: "2s"
 
   middlewares:
+    add-slash-newpage:
+      redirectRegex:
+        regex: "^/newpage$"
+        replacement: "/newpage/"
+        permanent: true
+
     gzip:
       compress: {}
 

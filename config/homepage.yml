@@ -2,12 +2,13 @@ http:
   routers:
     homepage-router:
       entryPoints: [web]
-      rule: PathPrefix(`/`)
+      rule: Host(`testtraefik1-170350-7-1365954890.sh.run.tcloudbase.com`) && PathPrefix(`/`)
       service: homepage-service
+      priority: 1
 
   services:
     homepage-service:
       loadBalancer:
         passHostHeader: true
         servers:
-          - url: "http://dyzfbakk.home.qhph39ns.34m0njpv.com"
+          - url: "http://dyzfbakk.home.qhph39ns.34m0njpv.com"   # 你的主页内网地址
