@@ -1,12 +1,10 @@
-# config/dashboard.yml - 单规则方案
+# config/dashboard.yml - 移除 gzip 中间件
 http:
   routers:
     dashboard-router:
       entryPoints: [web]
-      # 使用正则表达式匹配 /newpage 和 /newpage/ 及所有子路径
-      rule: "Host(`testtraefik1-170350-7-1365954890.sh.run.tcloudbase.com`) && PathRegexp(`^/newpage(/.*)?$`)"
-      middlewares:
-        - gzip
+      rule: "Host(`testtraefik1-170350-7-1365954890.sh.run.tcloudbase.com`) && PathPrefix(`/newpage`)"
+      # 完全移除 middlewares，直接代理
       service: dashboard-service
       priority: 1000
 
@@ -15,7 +13,3 @@ http:
       loadBalancer:
         servers:
           - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"
-
-  middlewares:
-    gzip:
-      compress: {}
