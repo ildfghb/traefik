@@ -1,12 +1,12 @@
-# config/dashboard.yml
+# config/dashboard.yml - 单规则方案
 http:
   routers:
     dashboard-router:
       entryPoints: [web]
-      rule: "Host(`testtraefik1-170350-7-1365954890.sh.run.tcloudbase.com`) && PathPrefix(`/newpage`)"
+      # 使用正则表达式匹配 /newpage 和 /newpage/ 及所有子路径
+      rule: "Host(`testtraefik1-170350-7-1365954890.sh.run.tcloudbase.com`) && PathRegexp(`^/newpage(/.*)?$`)"
       middlewares:
         - gzip
-        # 移除 add-slash-newpage 中间件，让 SvelteKit 自己处理重定向
       service: dashboard-service
       priority: 1000
 
@@ -15,10 +15,6 @@ http:
       loadBalancer:
         servers:
           - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"
-        healthCheck:
-          path: "/newpage/"  # 使用能正常响应的路径
-          interval: "30s"
-          timeout: "5s"
 
   middlewares:
     gzip:
