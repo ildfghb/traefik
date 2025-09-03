@@ -1,14 +1,27 @@
-# config/dashboard.yml
 http:
   routers:
     dashboard-router:
       entryPoints: [web]
       rule: "Host(`testtraefik1-170350-7-1365954890.sh.run.tcloudbase.com`) && PathPrefix(`/newpage`)"
       service: dashboard-service
-      priority: 2000  # 高于 homepage 的优先级
+      priority: 2000
+      middlewares:
+        - strip-newpage
+        - gzip
 
   services:
     dashboard-service:
       loadBalancer:
+        passHostHeader: true
         servers:
           - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"
+
+  middlewares:
+    gzip:
+      compress: {}
+
+    strip-newpage:
+      stripPrefix:
+        prefixes:
+          - /newpage
+        forceSlash: true
