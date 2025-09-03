@@ -14,14 +14,12 @@ http:
       loadBalancer:
         passHostHeader: true
         servers:
-          - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"
+          - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com"  # ← 去掉 :3000
 
   middlewares:
     gzip:
       compress: {}
-
     strip-newpage:
       stripPrefix:
-        prefixes:
-          - /newpage
+        prefixes: ["/newpage"]
         forceSlash: true
