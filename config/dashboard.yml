@@ -2,20 +2,25 @@
 http:
   routers:
     dashboard-router:
-      entryPoints: [web]
-      rule: "PathPrefix(`/newpage`)"
-      service: dashboard-service
-      priority: 100
+      entryPoints: [web]  # CloudBase 前端 TLS 终止，进容器一般是 80 => web
+      # 加 Host 限定，避免误匹配
+      rule: "Host(`testtraefik1-170350-7-1365954890.sh.run.tcloudbase.com`) && PathPrefix(`/newpage`)"
       middlewares:
         - add-slash-newpage
         - gzip
-        
+        # 调试期可加这个看是否经过 Traefik：
+        # - mark-traefik
+      service: dashboard-service
+      priority: 1000
+
   services:
     dashboard-service:
       loadBalancer:
         servers:
+          # 若有容器内网名（同 docker 网络），用 http://dashboard:3000 更好；
+          # 没有的话用你现在这个公网域名也行（只是多走一跳）。
           - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"
-        # 可选：启用健康检查
+        # 可选健康检查，防止后端挂了还转发
         # healthCheck:
         #   path: "/newpage/"
         #   interval: "30s"
@@ -27,6 +32,12 @@ http:
         regex: "^/newpage$"
         replacement: "/newpage/"
         permanent: true
-    
+
     gzip:
       compress: {}
+
+    # 调试：给响应打水印，便于确认是否经过了 Traefik
+    mark-traefik:
+      headers:
+        customResponseHeaders:
+          X-Via: traefik-gw
