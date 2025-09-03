@@ -7,18 +7,19 @@ http:
       priority: 2000
       middlewares:
         - strip-newpage
-        - gzip
+        - gzip   # 如果日志里 mime 噪音烦，先去掉这个再测
 
   services:
     dashboard-service:
       loadBalancer:
-        passHostHeader: true
+        passHostHeader: false    # 建议 false，用上游自身 Host，更稳
         servers:
-          - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com"  # ← 去掉 :3000
+          - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"  # ← 关键：带上 :3000
 
   middlewares:
     gzip:
       compress: {}
+
     strip-newpage:
       stripPrefix:
         prefixes: ["/newpage"]
