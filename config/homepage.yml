@@ -1,4 +1,4 @@
-# config/homepage.yml  
+# config/homepage.yml
 http:
   routers:
     homepage-router:
@@ -8,14 +8,13 @@ http:
       priority: 1
       middlewares:
         - gzip
-        
+
   services:
     homepage-service:
       loadBalancer:
         servers:
           - url: "http://dyzfbakk.home.qhph39ns.34m0njpv.com"
-        # 可选：启用健康检查
-        # healthCheck:
-        #   path: "/"
-        #   interval: "30s" 
-        #   timeout: "5s"
+
+  middlewares:
+    gzip:
+      compress: {}
