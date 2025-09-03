@@ -1,15 +1,40 @@
-# config/dashboard.yml - 移除 gzip 中间件
+# config/dashboard.yml - 详细调试版本
 http:
   routers:
+    # 添加一个捕获所有请求的调试路由（最低优先级）
+    catch-all-debug:
+      entryPoints: [web]
+      rule: "Host(`testtraefik1-170350-7-1365954890.sh.run.tcloudbase.com`)"
+      middlewares:
+        - debug-headers
+      service: debug-service
+      priority: 1
+
+    # Dashboard 路由 - 提高优先级
     dashboard-router:
       entryPoints: [web]
       rule: "Host(`testtraefik1-170350-7-1365954890.sh.run.tcloudbase.com`) && PathPrefix(`/newpage`)"
-      # 完全移除 middlewares，直接代理
+      middlewares:
+        - debug-headers
       service: dashboard-service
-      priority: 1000
+      priority: 2000
 
   services:
+    debug-service:
+      loadBalancer:
+        servers:
+          - url: "https://httpbin.org"
+
     dashboard-service:
       loadBalancer:
         servers:
           - url: "http://dyzfbakk.dashboard.qhph39ns.34m0njpv.com:3000"
+
+  middlewares:
+    debug-headers:
+      headers:
+        customResponseHeaders:
+          X-Debug-Route: "{{.RouterName}}"
+          X-Debug-Service: "{{.ServiceName}}"
+          X-Debug-Path: "{{.Request.URL.Path}}"
+          X-Debug-Host: "{{.Request.Host}}"
